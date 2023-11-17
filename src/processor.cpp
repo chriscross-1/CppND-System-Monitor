@@ -5,7 +5,7 @@
 float Processor::Utilization() {
     auto vec = LinuxParser::CpuUtilization();
 
-    auto cpuStats = ConvertStringVecToIntVec(vec);
+    auto cpuStats = ConvertStringVecToLongVec(vec);
 
     /******************  CPU calculation  *******************
     // PrevIdle = previdle + previowait
@@ -41,21 +41,21 @@ float Processor::Utilization() {
     return cpuPercentage;
 }
 
-std::vector<int> Processor::ConvertStringVecToIntVec(const std::vector<std::string>& vec) const
+std::vector<long> Processor::ConvertStringVecToLongVec(const std::vector<std::string>& vec) const
 {
     auto size = vec.size();
-    std::vector<int> intVec;
-    intVec.reserve(size);
+    std::vector<long> returnVec;
+    returnVec.reserve(size);
 
     for (const auto& elem : vec)
     {
-        intVec.emplace_back(std::stoi(elem));
+        returnVec.emplace_back(std::stol(elem));
     }
 
-    return intVec;
+    return returnVec;
 }
 
-void Processor::SaveCurrentCPUStatistics(std::vector<int>& cpuStats)
+void Processor::SaveCurrentCPUStatistics(std::vector<long>& cpuStats)
 {
     m_prevIdle = cpuStats[CPUType::IDLE];
     m_prevIoWait = cpuStats[CPUType::IOWAIT];
