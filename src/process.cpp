@@ -15,29 +15,26 @@ using std::vector;
 int Process::Pid() { return m_pid; }
 
 // TODO: Return this process's CPU utilization
-float Process::CpuUtilization() const {  
-    // /proc/uptime - uptime
+float Process::CpuUtilization() const {
+    /****************************** Calculation ******************************/
+    // from /proc/uptime: uptime
 
-    // /proc/[PID]/stat
+    // from /proc/[PID]/stat:
     // #14 utime - CPU time spent in user code, measured in clock ticks
     // #15 stime - CPU time spent in kernel code, measured in clock ticks
     // #16 cutime - Waited-for children's CPU time spent in user code (in clock ticks)
     // #17 cstime - Waited-for children's CPU time spent in kernel code (in clock ticks)
     // #22 starttime - Time when the process started, measured in clock ticks
 
-    // Calculation
-
     // First we determine the total time spent for the process:
     // total_time = utime + stime
-
     // We also have to decide whether we want to include the time from children processes. If we do, then we add those values to total_time:
     // total_time = total_time + cutime + cstime
-
     // Next we get the total elapsed time in seconds since the process started:
     // seconds = uptime - (starttime / Hertz)
-
     // Finally we calculate the CPU usage percentage:
     // cpu_usage = 100 * ((total_time / Hertz) / seconds)
+    /**************************************************************************/
 
     auto vec = LinuxParser::ProcessCpuUtilization(m_pid);
 

@@ -7,7 +7,7 @@ float Processor::Utilization() {
 
     auto cpuStats = ConvertStringVecToLongVec(vec);
 
-    /******************  CPU calculation  *******************
+    /******************  CPU calculation  *******************/
     // PrevIdle = previdle + previowait
     // Idle = idle + iowait
     // PrevNonIdle = prevuser + prevnice + prevsystem +
@@ -19,7 +19,7 @@ float Processor::Utilization() {
     // totald = Total - PrevTotal
     // idled = Idle - PrevIdle
     // CPU_Percentage = (totald - idled)/totald
-    ********************************************************/
+    /********************************************************/
 
     m_prevIdle = m_prevIdle + m_prevIoWait;
     auto idle = cpuStats[CPUType::IDLE] + cpuStats[CPUType::IOWAIT];

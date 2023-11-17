@@ -31,7 +31,7 @@ vector<Process>& System::Processes() {
         processes_.push_back(p);
     }
 
-    // TODO: sort proccesses
+    // sort proccesses
     std::sort(processes_.begin(), processes_.end());
     std::reverse(processes_.begin(), processes_.end());
 

@@ -69,8 +69,7 @@ vector<int> LinuxParser::Pids() {
 
 // TODO: Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() {
-  string key;
-  int value;
+  std::string key;
   int memoryTotal = 1;
   int memoryFree = 1;
   std::string line;
@@ -79,11 +78,11 @@ float LinuxParser::MemoryUtilization() {
   if (stream.is_open()) {
     while (std::getline(stream, line)) {
       std::istringstream linestream(line);
-      linestream >> key >> value;
+      linestream >> key;
       if (key == "MemTotal:") {
-        memoryTotal = value;
+        linestream >> memoryTotal;
       } else if (key == "MemFree:") {
-        memoryFree = value;
+        linestream >> memoryFree;
         break;
       } 
     }
@@ -205,8 +204,9 @@ string LinuxParser::Ram(int pid) {
   if (stream.is_open()) {
     while (std::getline(stream, line)) {
       std::istringstream linestream(line);
-      linestream >> key >> value;
+      linestream >> key;
       if (key == "VmSize:") {
+        linestream >> value;
         ram = std::stol(value);
         // Convert from KB to MB
         ram /= 1000;
@@ -228,8 +228,9 @@ string LinuxParser::Uid(int pid) {
   if (stream.is_open()) {
     while (std::getline(stream, line)) {
       std::istringstream linestream(line);
-      linestream >> key >> value;
+      linestream >> key;
       if (key == "Uid:") {
+        linestream >> value;
         return value;
       }
     }
@@ -286,14 +287,15 @@ int LinuxParser::GetValueFromStatFile(const std::string& key)
 {  
   std::string currentKey;
   std::string line;
-  int value = 0;
+  int value;
   std::ifstream stream(kProcDirectory + kStatFilename);
 
   if (stream.is_open()) {
     while (std::getline(stream, line)) {
       std::istringstream linestream(line);
-      linestream >> currentKey >> value;
+      linestream >> currentKey;
       if (currentKey == key) {
+        linestream >> value;
         return value;
       }
     }
