@@ -6,10 +6,9 @@
 
 class Processor {
  public:
-  float Utilization();  // TODO: See src/processor.cpp
+  float Utilization();
 
  private:
-    // TODO: Declare any necessary private members
     std::vector<long> ConvertStringVecToLongVec(const std::vector<std::string>& vec) const;
     void SaveCurrentCPUStatistics(std::vector<long>& cpuStats);
 

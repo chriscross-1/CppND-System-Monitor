@@ -11,10 +11,10 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-// TODO: Return this process's ID
+// Return this process's ID
 int Process::Pid() { return m_pid; }
 
-// TODO: Return this process's CPU utilization
+// Return this process's CPU utilization
 float Process::CpuUtilization() const {
     /****************************** Calculation ******************************/
     // from /proc/uptime: uptime
@@ -40,30 +40,56 @@ float Process::CpuUtilization() const {
 
     auto totalTime = std::stol(vec[ProcessCPUTypes::UTIME]) + std::stol(vec[ProcessCPUTypes::STIME]);
     totalTime += std::stol(vec[ProcessCPUTypes::CUTIME]) + std::stol(vec[ProcessCPUTypes::CSTIME]);
-    auto seconds = LinuxParser::UpTime() - UpTime();
+    auto seconds = this->UpTime();
 
     auto cpuUsage = (totalTime / sysconf(_SC_CLK_TCK)) / (float)seconds;
 
     return cpuUsage;
 }
 
-// TODO: Return the command that generated this process
-string Process::Command() { return LinuxParser::Command(m_pid); }
+// Return the command that generated this process
+string Process::Command() {
+    auto command = LinuxParser::Command(m_pid);
+    const auto maxSize = 40;
 
-// TODO: Return this process's memory utilization
-string Process::Ram() { return LinuxParser::Ram(m_pid); }
+    // Only print full commands with max 40 characters
+    if (command.size() <= maxSize)
+        return command;
 
-// TODO: Return the user (name) that generated this process
-string Process::User() { return LinuxParser::User(m_pid); }
+    // Print only name of command if possible
+    auto last = command.find_last_of('/');
+    if (last != std::string::npos)
+    {
+        auto commandName = command.substr(last + 1);
+        if (commandName.size() <= maxSize)
+            return commandName;
+        else
+            return commandName.substr(0, maxSize - 3) + "...";
+    }
 
-// TODO: Return the age of this process (in seconds)
-long int Process::UpTime() const {
-    auto ticks = LinuxParser::UpTime(m_pid);
-    return ticks / sysconf(_SC_CLK_TCK);
+    // If command to long, print only beginning
+    return command.substr(0, maxSize - 3) + "...";
 }
 
-// TODO: Overload the "less than" comparison operator for Process objects
-// REMOVE: [[maybe_unused]] once you define the function
+// Return this process's memory utilization
+string Process::Ram() { return LinuxParser::Ram(m_pid); }
+
+// Return the user (name) that generated this process
+string Process::User() { return LinuxParser::User(m_pid); }
+
+// Return the age of this process (in seconds)
+long int Process::UpTime() const {
+    auto processTicks = LinuxParser::UpTime(m_pid);
+    auto processSeconds = processTicks / sysconf(_SC_CLK_TCK);
+    auto uptime = LinuxParser::UpTime();
+
+    if (uptime > processSeconds)
+        return uptime - processSeconds;
+    
+    return uptime;
+}
+
+// Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const {
     return CpuUtilization() < a.CpuUtilization();
 }

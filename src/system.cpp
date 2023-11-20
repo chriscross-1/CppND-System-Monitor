@@ -13,45 +13,40 @@ using std::set;
 using std::size_t;
 using std::string;
 using std::vector;
-/*You need to complete the mentioned TODOs in order to satisfy the rubric criteria "The student will be able to extract and display basic data about the system."
 
-You need to properly format the uptime. Refer to the comments mentioned in format. cpp for formatting the uptime.*/
-
-// TODO: Return the system's CPU
+// Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
-// TODO: Return a container composed of the system's processes
+// Return a container composed of the system's processes
 vector<Process>& System::Processes() {
     auto pids = LinuxParser::Pids();
     processes_.clear();
     processes_.reserve(pids.size());
     for (const auto& pid : pids)
     {
-        Process p(pid);
-        processes_.push_back(p);
+        processes_.emplace_back(pid);
     }
 
-    // sort proccesses
-    std::sort(processes_.begin(), processes_.end());
-    std::reverse(processes_.begin(), processes_.end());
+    // sort proccesses by CPU usage
+    std::sort(processes_.rbegin(), processes_.rend());
 
     return processes_;
 }
 
-// TODO: Return the system's kernel identifier (string)
+// Return the system's kernel identifier (string)
 std::string System::Kernel() { return LinuxParser::Kernel(); }
 
-// TODO: Return the system's memory utilization
+// Return the system's memory utilization
 float System::MemoryUtilization() { return LinuxParser::MemoryUtilization(); }
 
-// TODO: Return the operating system name
+// Return the operating system name
 std::string System::OperatingSystem() { return LinuxParser::OperatingSystem(); }
 
-// TODO: Return the number of processes actively running on the system
+// Return the number of processes actively running on the system
 int System::RunningProcesses() { return LinuxParser::RunningProcesses(); }
 
-// TODO: Return the total number of processes on the system
+// Return the total number of processes on the system
 int System::TotalProcesses() { return LinuxParser::TotalProcesses(); }
 
-// TODO: Return the number of seconds since the system started running
+// Return the number of seconds since the system started running
 long int System::UpTime() { return LinuxParser::UpTime(); }

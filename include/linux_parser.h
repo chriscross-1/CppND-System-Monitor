@@ -19,6 +19,15 @@ const std::string kVersionFilename{"/version"};
 const std::string kOSPath{"/etc/os-release"};
 const std::string kPasswordPath{"/etc/passwd"};
 
+const std::string kFilterProcesses("processes");
+const std::string kFilterRunningProcesses("procs_running");
+const std::string kFilterMemTotal("MemTotal:");
+const std::string kFilterMemFree("MemFree:");
+const std::string kFilterCPU("cpu");
+const std::string kFilterUID("Uid:");
+// using actual physical memory instead of virtual memory
+const std::string kFilterRAM("VmRSS:");
+
 // System
 float MemoryUtilization();
 long UpTime();
@@ -57,6 +66,6 @@ int GetValueFromStatFile(const std::string& key);
 };  // namespace LinuxParser
 
 enum CPUType { USER = 0, NICE, SYSTEM, IDLE, IOWAIT, IRQ, SOFTIRQ, STEAL, GUEST, GUEST_NICE };
-enum ProcessCPUTypes { UTIME = 13, STIME, CUTIME, CSTIME };
+enum ProcessCPUTypes { UTIME = 13, STIME, CUTIME, CSTIME, STARTTIME = 21 };
 
 #endif
